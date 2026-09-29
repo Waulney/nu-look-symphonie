@@ -1,0 +1,242 @@
+/* --- VARIABLES & THÈMES (Mode Clair / Sombre) --- */
+:root {
+  --bg-color: #f4f6f9;
+  --panel-bg: #ffffff;
+  --text-color: #2c3e50;
+  --text-muted: #7f8c8d;
+  --border-color: #e2e8f0;
+
+  /* Couleurs de la grille */
+  --cell-bg: #ffffff;
+  --cell-border: #cbd5e1;
+  --cell-hover: #e2e8f0;
+  --cell-selected: #fef08a; /* Jaune fluide pendant la sélection */
+  --cell-selected-text: #854d0e;
+  --cell-found: #22c55e; /* Vert quand le mot est trouvé */
+  --cell-found-text: #ffffff;
+
+  /* Interface utilisateur */
+  --accent-color: #2563eb;
+  --accent-hover: #1d4ed8;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --radius: 8px;
+}
+
+/* Mode Sombre (Appliqué sur `body.dark-mode`) */
+body.dark-mode {
+  --bg-color: #0f172a;
+  --panel-bg: #1e293b;
+  --text-color: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+
+  --cell-bg: #1e293b;
+  --cell-border: #475569;
+  --cell-hover: #334155;
+  --cell-selected: #854d0e;
+  --cell-selected-text: #fef08a;
+  --cell-found: #16a34a;
+  --cell-found-text: #ffffff;
+
+  --accent-color: #3b82f6;
+  --accent-hover: #60a5fa;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+/* --- REZ-DE-CHAUSSÉE / LAYOUT --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none; /* Évite la sélection bleue lors du glissé */
+  -webkit-user-select: none;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.game-container {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* --- EN-TÊTE ET CONTRÔLES --- */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--panel-bg);
+  padding: 15px 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  gap: 15px;
+  flex-wrap: nowrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.music-icon {
+  display: inline-block;
+  user-select: none;
+}
+
+h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  white-space: nowrap;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+select {
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+  max-width: 200px;
+}
+
+#theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+#theme-toggle:hover {
+  background-color: var(--cell-hover);
+}
+
+/* --- ZONE DE JEU PRINCIPALE --- */
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+  }
+}
+
+/* --- GRILLE DE JEU (10x10) --- */
+#grid-container {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  background: var(--panel-bg);
+  padding: 12px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+  touch-action: none; /* Empêche le défilement de la page sur mobile pendant la sélection */
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--cell-bg);
+  border: 1px solid var(--cell-border);
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: clamp(0.9rem, 2.5vw, 1.25rem);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.cell:hover {
+  background-color: var(--cell-hover);
+}
+
+.cell.selected {
+  background-color: var(--cell-selected) !important;
+  color: var(--cell-selected-text) !important;
+  transform: scale(0.95);
+}
+
+.cell.found {
+  background-color: var(--cell-found) !important;
+  color: var(--cell-found-text) !important;
+  border-color: var(--cell-found) !important;
+}
+
+/* --- BARRE LATÉRALE / LISTE DES MOTS --- */
+.sidebar {
+  background: var(--panel-bg);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.sidebar h2 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#words-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+#words-list li {
+  background-color: var(--bg-color);
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+#words-list li.found-word {
+  background-color: var(--cell-found);
+  color: var(--cell-found-text);
+  text-decoration: line-through;
+  opacity: 0.7;
+  border-color: var(--cell-found);
+}
